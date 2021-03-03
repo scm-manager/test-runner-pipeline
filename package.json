@@ -1,0 +1,20 @@
+{
+  "name": "@scm-manager/test-runner-pipeline",
+  "version": "1.0.0-SNAPSHOT",
+  "private": true,
+  "author": "Eduard Heimbuch <eduard.heimbuch@cloudogu.com>",
+  "description": "Pipeline to automatically run the Integration-Test-Runner with the newest SCM-Manager development versions",
+  "license": "MIT",
+  "repository": "https://github.com/scm-manager/test-runner-pipeline",
+  "main": "scripts/fetch-image-version.js",
+  "scripts": {
+    "fetch-image-version": "node scripts/fetch-image-version.js"
+  },
+  "bin": {
+    "fetch-image-version": "scripts/fetch-image-version.js"
+  },
+  "dependencies": {
+    "isomorphic-fetch": "^3.0.0"
+  },
+  "prettier": "@scm-manager/prettier-config"
+}

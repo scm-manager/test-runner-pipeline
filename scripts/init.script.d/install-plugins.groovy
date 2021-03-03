@@ -27,7 +27,7 @@ def defaultPlugins = [
   "scm-commit-message-checker-plugin",
   "scm-trace-monitor-plugin",
   "scm-markdown-plantuml-plugin"
-];
+]
 
 def plugins = []
 def pluginsFromOldInstallation = []
