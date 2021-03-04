@@ -1,7 +1,6 @@
 // this script installs required plugins for scm-manager
 
-import sonia.scm.plugin.PluginManager;
-import groovy.json.JsonSlurper;
+import sonia.scm.plugin.PluginManager
 
 // default plugin configuration
 def defaultPlugins = [
@@ -30,7 +29,6 @@ def defaultPlugins = [
 ]
 
 def plugins = []
-def pluginsFromOldInstallation = []
 
 // methods
 
@@ -64,18 +62,15 @@ static def installPlugin(pluginManager, pluginName) {
   return false;
 }
 
+String pluginsParameter = System.getenv("TRP_PLUGINS")
 
-plugins.addAll(defaultPlugins)
-
-File pluginListFile = new File(sonia.scm.SCMContext.getContext().getBaseDirectory(), "installed_plugins_before_update.lst")
-if (pluginListFile.exists()) {
-  def reader = pluginListFile.newReader()
-  def line
-  while ((line = reader.readLine()) != null) {
-    System.out.println("Add previously installed plugin '${line}'");
-    plugins.add(line)
-    pluginsFromOldInstallation.add(line)
+if (pluginsParameter != null && !pluginsParameter.trim().isEmpty()) {
+  def customPlugins = pluginsParameter.split(",")
+  for (def plugin : customPlugins) {
+    plugins.add(plugin.trim())
   }
+} else {
+  plugins.addAll(defaultPlugins)
 }
 
 def pluginManager = injector.getInstance(PluginManager.class);
@@ -90,21 +85,10 @@ for (def name : plugins) {
       System.out.println("Cannot install missing plugin ${name}. No available plugin found!");
     } else {
       System.out.println("install missing plugin ${availableInformation.name} in version ${availableInformation.version}");
-      pluginsFromOldInstallation.remove(name)
       restart |= installPlugin(pluginManager, name)
     }
   } else {
-    pluginsFromOldInstallation.remove(name)
     System.out.println("plugin ${name} already installed.");
-  }
-}
-
-if (pluginListFile.exists()) {
-  if (pluginsFromOldInstallation.isEmpty()) {
-    println "Deleting file with plugins from old installation; all plugins have been installed again."
-    pluginListFile.delete()
-  } else {
-    println "Not all plugins from old installation could be installed; keeping list to try again next time."
   }
 }
 

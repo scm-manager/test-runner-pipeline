@@ -16,6 +16,10 @@ pipeline {
     cron('H H(3-5) * * 1-5')
   }
 
+  environment {
+    HOME = "${env.workspace}"
+  }
+
   stages {
     stage('Get version') {
       agent {
@@ -27,8 +31,25 @@ pipeline {
       steps {
         sh "yarn install"
         script {
-          imageTag = "cloudogu/scm-manager:" + sh(script: "node scripts/fetch-image-version.js", returnStdout: true)
+          def tagVersion = sh(script: "node scripts/fetch-image-version.js", returnStdout: true)
+          imageTag = "cloudogu/scm-manager:" + tagVersion
         }
+      }
+    }
+    stage('Prepare scm-home') {
+      agent {
+        node {
+          label "docker"
+        }
+      }
+      when {
+        expression {
+          params.Plugins != ""
+        }
+      }
+      steps {
+        writeFile file: 'scm-home/init.script.d/plugins', text: params.Plugins
+        sh 'cat scm-home/init.script.d/plugins.txt'
       }
     }
     stage('Start SCM Server') {
@@ -40,10 +61,9 @@ pipeline {
       steps {
         script {
           println("Start scm-server using image ${imageTag}")
-          docker.image("cloudogu/scm-manager:${imageTag}").withRun("--name scm-server") {
+          docker.image(imageTag).withRun("--name scm-server -v scm-home:/var/lib/scm -e TRP_PLUGINS=${params.Plugins}") {
             docker.image('scmmanager/node-build:12.16.3').inside {
-              // Test runner ausführen
-              // scm-server:8080 für Verbindung
+              sh "./scripts/run-integration-tests.sh"
             }
           }
         }
