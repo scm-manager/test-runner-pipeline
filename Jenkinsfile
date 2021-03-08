@@ -63,7 +63,7 @@ pipeline {
           println("Start scm-server using image ${imageTag}")
           docker.image(imageTag).withRun("--name scm-server -v scm-home:/var/lib/scm -e TRP_PLUGINS=${params.Plugins}") {
             docker.image('scmmanager/node-build:12.16.3').inside {
-              sh "./scripts/run-integration-tests.sh"
+              sh "LOG_LEVEL=DEBUG ./scripts/run-integration-tests.sh"
             }
           }
         }
