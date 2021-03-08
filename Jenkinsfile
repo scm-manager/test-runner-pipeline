@@ -54,8 +54,7 @@ pipeline {
           println("Start scm-server using image ${imageTag}")
           docker.image(imageTag).withRun("--name scm-server -v scm-home:/var/lib/scm -e TRP_PLUGINS=${params.Plugins}") {
             def ip = sh(script: "docker inspect -f \"{{.NetworkSettings.IPAddress}}\" scm-server", returnStdout: true).trim()
-            echo ip
-            docker.image('cypress/base:14.16.0').inside {
+            docker.image('scmmanager/node-build:14.16.0').inside {
               withCredentials([usernamePassword(credentialsId: 'cesmarvin-github', passwordVariable: 'GITHUB_API_TOKEN', usernameVariable: 'GITHUB_ACCOUNT')]) {
                 sh "LOG_LEVEL=debug SERVER_URL=\"http://${ip}:8080/scm\" ./scripts/run-integration-tests.sh"
               }
