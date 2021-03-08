@@ -7,6 +7,7 @@ rm -rf integration-test-runner
 git clone https://github.com/scm-manager/integration-test-runner
 cd integration-test-runner
 yarn install
+# Ugly workaround till we release the test-runner
 yarn link
 yarn link @scm-manager/integration-test-runner
 yarn integration-test-runner collect -c -s
