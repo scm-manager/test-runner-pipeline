@@ -9,5 +9,5 @@ cd integration-test-runner
 yarn install
 ls -l
 yarn integration-test-runner collect -c -s
-yarn integration-test-runner provision -a http://scm-server:8080/scm -u scmadmin -p scmadmin
-yarn integration-test-runner run -a http://scm-server:8080/scm -u scmadmin -p scmadmin
+yarn integration-test-runner provision -a ${SERVER_URL} -u scmadmin -p scmadmin
+yarn integration-test-runner run -a ${SERVER_URL} -u scmadmin -p scmadmin
