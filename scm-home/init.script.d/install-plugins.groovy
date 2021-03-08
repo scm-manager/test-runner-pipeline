@@ -1,6 +1,8 @@
 // this script installs required plugins for scm-manager
 
 import sonia.scm.plugin.PluginManager
+import sonia.scm.config.ScmConfiguration
+import sonia.scm.util.ScmConfigurationUtil
 
 // default plugin configuration
 def defaultPlugins = [
@@ -31,6 +33,10 @@ def defaultPlugins = [
 def plugins = []
 
 // methods
+
+def scmConfig = injector.getInstance(ScmConfiguration.class);
+scmConfig.setPluginUrl("https://oss.cloudogu.com/jenkins/job/scm-manager-github/job/ci-plugin-snapshot/job/master/lastSuccessfulBuild/artifact/plugins/plugin-center.json")
+ScmConfigurationUtil.getInstance().store(scmConfig)
 
 static def isInstalled(installed, name) {
   for (def plugin : installed) {

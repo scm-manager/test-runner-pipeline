@@ -36,20 +36,9 @@ pipeline {
         }
       }
     }
-    stage('Prepare scm-home') {
-      agent {
-        node {
-          label "docker"
-        }
-      }
-      when {
-        expression {
-          params.Plugins != ""
-        }
-      }
+    stage('Trigger ci-plugin-snapshot build') {
       steps {
-        writeFile file: 'scm-home/init.script.d/plugins', text: params.Plugins
-        sh 'cat scm-home/init.script.d/plugins.txt'
+        build job: '../ci-plugin-snapshot/master'
       }
     }
     stage('Start SCM Server') {
