@@ -58,7 +58,9 @@ pipeline {
             def ip = sh(script: "docker inspect -f \"{{.NetworkSettings.IPAddress}}\" scm-server", returnStdout: true).trim()
             docker.image('scmmanager/node-build:14.16.0').inside {
               withCredentials([usernamePassword(credentialsId: 'cesmarvin-github', passwordVariable: 'GITHUB_API_TOKEN', usernameVariable: 'GITHUB_ACCOUNT')]) {
-                sh "LOG_LEVEL=debug SERVER_URL=\"http://${ip}:8080/scm\" ./scripts/run-integration-tests.sh"
+                sh "LOG_LEVEL=debug yarn integration-test-runner collect -c -s"
+                sh "LOG_LEVEL=debug yarn integration-test-runner provision -a \"http://${ip}:8080/scm\" -u scmadmin -p scmadmin"
+                sh "LOG_LEVEL=debug yarn integration-test-runner run -a \"http://${ip}:8080/scm\" -u scmadmin -p scmadmin"
               }
             }
           }
