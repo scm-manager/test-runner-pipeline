@@ -40,7 +40,7 @@ pipeline {
         build job: '../ci-plugin-snapshot/master'
       }
     }
-    stage('Start SCM Server') {
+    stage('Run integration-test-runner') {
       agent {
         node {
           label "docker"
@@ -50,7 +50,6 @@ pipeline {
         HOME = "${env.WORKSPACE}"
       }
       steps {
-
         script {
           println("Start scm-server using image ${imageTag}")
           try {
@@ -66,8 +65,7 @@ pipeline {
           }
           finally {
             junit allowEmptyResults: true, testResults: "integration-test-runner/cypress/reports/*.xml"
-            archiveArtifacts allowEmptyArchive: true, artifacts: "integration-test-runner/cypress/screenshots/**/*.png"
-            archiveArtifacts allowEmptyArchive: true, artifacts: "integration-test-runner/cypress/videos/**/*.mp4"
+            archiveArtifacts allowEmptyArchive: true, artifacts: "integration-test-runner/cypress/screenshots/**/*.png,integration-test-runner/cypress/videos/**/*.mp4"
           }
         }
       }
@@ -76,6 +74,7 @@ pipeline {
 
   post {
     failure {
+      //TODO change email to scm-team@cloudogu.com
       mail to: "eduard.heimbuch@cloudogu.com",
         subject: "Jenkins Job ${JOB_NAME} - Build #${BUILD_NUMBER} - ${currentBuild.currentResult}!",
         body: "Check console output at ${BUILD_URL} to view the results."
