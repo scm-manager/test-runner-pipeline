@@ -35,8 +35,9 @@ def plugins = []
 // methods
 
 def scmConfig = injector.getInstance(ScmConfiguration.class);
-scmConfig.setPluginUrl("https://oss.cloudogu.com/jenkins/job/scm-manager-github/job/ci-plugin-snapshot/job/master/lastSuccessfulBuild/artifact/plugins/plugin-center.json")
-ScmConfigurationUtil.getInstance().store(scmConfig)
+scmConfig.setPluginUrl "https://oss.cloudogu.com/jenkins/job/scm-manager-github/job/ci-plugin-snapshot/job/master/lastSuccessfulBuild/artifact/plugins/plugin-center.json"
+ScmConfigurationUtil.getInstance().store scmConfig
+println "Set plugin center url to " + scmConfig.getPluginUrl
 
 static def isInstalled(installed, name) {
   for (def plugin : installed) {
@@ -73,9 +74,11 @@ String pluginsParameter = System.getenv("TRP_PLUGINS")
 if (pluginsParameter != null && !pluginsParameter.trim().isEmpty()) {
   def customPlugins = pluginsParameter.split(",")
   for (def plugin : customPlugins) {
+    System.out.println("Add plugin to install queue: " + plugin.trim());
     plugins.add(plugin.trim())
   }
 } else {
+  println "Add all default plugins to install queue"
   plugins.addAll(defaultPlugins)
 }
 

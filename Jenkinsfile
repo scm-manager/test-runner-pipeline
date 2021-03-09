@@ -62,7 +62,7 @@ pipeline {
             }
           }
         }
-        junit "integration-test-runner/cypress/reports/*.xml"
+        junit allowEmptyResults: true, testResults: "integration-test-runner/cypress/reports/*.xml"
         archiveArtifacts allowEmptyArchive: true, artifacts: "integration-test-runner/cypress/screenshots/**/*.png"
         archiveArtifacts allowEmptyArchive: true, artifacts: "integration-test-runner/cypress/videos/**/*.mp4"
       }
