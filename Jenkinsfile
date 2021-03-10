@@ -50,8 +50,6 @@ pipeline {
         HOME = "${env.WORKSPACE}"
       }
       steps {
-        sh "mkdir -p integration-test-runner/cypress/screenshots/"
-        sh "mkdir -p integration-test-runner/cypress/videos/"
         script {
           println("Start scm-server using image ${imageTag}")
           docker.image(imageTag).withRun("--name scm-server -v ${env.WORKSPACE}/scm-home/init.script.d:/var/lib/scm/init.script.d -e TRP_PLUGINS=${params.Plugins}") {
