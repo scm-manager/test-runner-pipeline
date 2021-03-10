@@ -60,7 +60,7 @@ pipeline {
               withCredentials([usernamePassword(credentialsId: 'cesmarvin-github', passwordVariable: 'GITHUB_API_TOKEN', usernameVariable: 'GITHUB_ACCOUNT')]) {
                 sh "LOG_LEVEL=debug yarn integration-test-runner collect -c -s"
                 sh "LOG_LEVEL=debug yarn integration-test-runner provision -a \"http://${ip}:8080/scm\" -u scmadmin -p scmadmin"
-                sh "LOG_LEVEL=debug yarn integration-test-runner run -a \"http://${ip}:8080/scm\" -u scmadmin -p scmadmin"
+                sh "LOG_LEVEL=debug yarn integration-test-runner run -a \"http://${ip}:8080/scm\" -u scmadmin -p scmadmin -d \"node_modules/@scm-manager/integration-test-runner\""
               }
             }
           }

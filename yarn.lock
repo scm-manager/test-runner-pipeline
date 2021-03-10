@@ -962,10 +962,10 @@
   dependencies:
     any-observable "^0.3.0"
 
-"@scm-manager/integration-test-runner@^1.3.8":
-  version "1.3.8"
-  resolved "https://registry.yarnpkg.com/@scm-manager/integration-test-runner/-/integration-test-runner-1.3.8.tgz#5be43c934439eed9ee34f309a923cd09eb39f9c9"
-  integrity sha512-p+7Hk1txjZEA0Jm4ZXp0yBwE3Y+LotCg3q3La0fnqwNIrzapRTZIRcwLl+34+vrDc173BsecDRjUVqH99ketYw==
+"@scm-manager/integration-test-runner@^1.3.10":
+  version "1.3.10"
+  resolved "https://registry.yarnpkg.com/@scm-manager/integration-test-runner/-/integration-test-runner-1.3.10.tgz#8d246f6df1fcbaea7635582c68344c5697f32d81"
+  integrity sha512-/WLa/nPAnBhFMpquJBfF1RnjBNhWrwP9ZoswrCF7ZUcc4npNW8NNo4NmqJBI34Sj+NnpD0J9M38DzUHoJiZtsQ==
   dependencies:
     "@cypress/browserify-preprocessor" "^3.0.1"
     "@ffmpeg-installer/ffmpeg" "^1.0.20"
