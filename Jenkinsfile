@@ -79,8 +79,7 @@ pipeline {
 
   post {
     failure {
-      //TODO change email to scm-team@cloudogu.com
-      mail to: "eduard.heimbuch@cloudogu.com",
+      mail to: "scm-team@cloudogu.com",
         subject: "Jenkins Job ${JOB_NAME} - Build #${BUILD_NUMBER} - ${currentBuild.currentResult}!",
         body: "Check console output at ${BUILD_URL} to view the results."
     }
