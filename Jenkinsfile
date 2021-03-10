@@ -40,7 +40,7 @@ pipeline {
         build job: '../ci-plugin-snapshot/master'
       }
     }
-    stage('Run integration-test-runner') {
+    stage('Run test-runner') {
       agent {
         node {
           label "docker"
