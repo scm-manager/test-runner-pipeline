@@ -37,7 +37,7 @@ def plugins = []
 def scmConfig = injector.getInstance(ScmConfiguration.class);
 scmConfig.setPluginUrl "https://oss.cloudogu.com/jenkins/job/scm-manager-github/job/ci-plugin-snapshot/job/master/lastSuccessfulBuild/artifact/plugins/plugin-center.json"
 ScmConfigurationUtil.getInstance().store scmConfig
-println "Set plugin center url to " + scmConfig.getPluginUrl
+println "Set plugin center url to " + scmConfig.getPluginUrl()
 
 static def isInstalled(installed, name) {
   for (def plugin : installed) {

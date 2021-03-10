@@ -59,6 +59,7 @@ pipeline {
             docker.image('scmmanager/node-build:14.16.0').inside {
               withCredentials([usernamePassword(credentialsId: 'cesmarvin-github', passwordVariable: 'GITHUB_API_TOKEN', usernameVariable: 'GITHUB_ACCOUNT')]) {
                 sh "LOG_LEVEL=debug yarn integration-test-runner collect -c -s"
+                sh "curl -X POST -u scmadmin:scmadmin \"http://${ip}:8080/scm/api/v2/plugins/available/scm-script-plugin/install?restart=true\""
                 sh "LOG_LEVEL=debug yarn integration-test-runner provision -a \"http://${ip}:8080/scm\" -u scmadmin -p scmadmin"
                 sh "LOG_LEVEL=debug yarn integration-test-runner run -a \"http://${ip}:8080/scm\" -u scmadmin -p scmadmin -d \"node_modules/@scm-manager/integration-test-runner\""
               }
@@ -85,5 +86,4 @@ pipeline {
     }
   }
 }
-
 String imageTag;
