@@ -8,6 +8,7 @@ pipeline {
 
   parameters {
     string(defaultValue: '', description: 'List of to be installed plugins (comma-separated)', name: 'Plugins', trim: true)
+    choice(name: 'Log_Level', choices: ['info', 'debug'], description: 'Sets the log level for the test-runner execution')
   }
 
   agent none
@@ -20,7 +21,7 @@ pipeline {
     stage('Get version') {
       agent {
         docker {
-          image 'scmmanager/node-build:12.16.3'
+          image 'scmmanager/node-build:14.16.0'
           label 'docker'
         }
       }
@@ -56,20 +57,22 @@ pipeline {
             def ip = sh(script: "docker inspect -f \"{{.NetworkSettings.IPAddress}}\" scm-server", returnStdout: true).trim()
             docker.image('scmmanager/node-build:14.16.0').inside {
               withCredentials([usernamePassword(credentialsId: 'cesmarvin-github', passwordVariable: 'GITHUB_API_TOKEN', usernameVariable: 'GITHUB_ACCOUNT')]) {
-                sh "LOG_LEVEL=debug yarn integration-test-runner collect -c -s"
+                sh "LOG_LEVEL=${params.Log_Level} yarn integration-test-runner collect -c -s"
                 sh "curl -X POST -u scmadmin:scmadmin \"http://${ip}:8080/scm/api/v2/plugins/available/scm-script-plugin/install?restart=true\""
-                sh "LOG_LEVEL=debug yarn integration-test-runner provision -a \"http://${ip}:8080/scm\" -u scmadmin -p scmadmin"
-                sh "LOG_LEVEL=debug yarn integration-test-runner run -a \"http://${ip}:8080/scm\" -u scmadmin -p scmadmin -d \"node_modules/@scm-manager/integration-test-runner\""
+                sh "LOG_LEVEL=${params.Log_Level} yarn integration-test-runner provision -a \"http://${ip}:8080/scm\" -u scmadmin -p scmadmin"
+                sh "LOG_LEVEL=${params.Log_Level} yarn integration-test-runner run -a \"http://${ip}:8080/scm\" -u scmadmin -p scmadmin -d \"node_modules/@scm-manager/integration-test-runner\""
               }
             }
+            sh "docker logs scm-server > scm-server.log"
           }
         }
       }
       post {
-        always {
+        failure {
           junit allowEmptyResults: true, testResults: "node_modules/@scm-manager/integration-test-runner/cypress/reports/*.xml"
           archiveArtifacts allowEmptyArchive: true, artifacts: "node_modules/@scm-manager/integration-test-runner/cypress/screenshots/**/*.png"
           archiveArtifacts allowEmptyArchive: true, artifacts: "node_modules/@scm-manager/integration-test-runner/cypress/videos/**/*.mp4"
+          archiveArtifacts allowEmptyArchive: true, artifacts: "scm-server.log"
         }
       }
     }

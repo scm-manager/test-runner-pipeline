@@ -6,7 +6,28 @@ import sonia.scm.util.ScmConfigurationUtil
 
 // default plugin configuration
 def defaultPlugins = [
-  "scm-editor-plugin"
+  "scm-gravatar-plugin",
+  "scm-mail-plugin",
+  "scm-review-plugin",
+  "scm-tagprotection-plugin",
+  "scm-jira-plugin",
+  "scm-activity-plugin",
+  "scm-statistic-plugin",
+  "scm-pathwp-plugin",
+  "scm-branchwp-plugin",
+  "scm-notify-plugin",
+  "scm-authormapping-plugin",
+  "scm-groupmanager-plugin",
+  "scm-pushlog-plugin",
+  "scm-support-plugin",
+  "scm-directfilelink-plugin",
+  "scm-readme-plugin",
+  "scm-editor-plugin",
+  "scm-landingpage-plugin",
+  "scm-repository-template-plugin",
+  "scm-commit-message-checker-plugin",
+  "scm-trace-monitor-plugin",
+  "scm-markdown-plantuml-plugin"
 ]
 
 def plugins = []
