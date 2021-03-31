@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "isomorphic-fetch": "^3.0.0",
-    "@scm-manager/integration-test-runner": "^1.3.17"
+    "@scm-manager/integration-test-runner": "^1.3.18"
   },
   "prettier": "@scm-manager/prettier-config"
 }
