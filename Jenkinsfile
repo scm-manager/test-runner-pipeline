@@ -69,9 +69,9 @@ pipeline {
       }
       post {
         failure {
-          junit allowEmptyResults: true, testResults: "node_modules/@scm-manager/integration-test-runner/cypress/reports/*.xml"
-          archiveArtifacts allowEmptyArchive: true, artifacts: "node_modules/@scm-manager/integration-test-runner/cypress/screenshots/**/*.png"
-          archiveArtifacts allowEmptyArchive: true, artifacts: "node_modules/@scm-manager/integration-test-runner/cypress/videos/**/*.mp4"
+          junit allowEmptyResults: true, testResults: "cypress/reports/*.xml"
+          archiveArtifacts allowEmptyArchive: true, artifacts: "cypress/screenshots/**/*.png"
+          archiveArtifacts allowEmptyArchive: true, artifacts: "cypress/videos/**/*.mp4"
           archiveArtifacts allowEmptyArchive: true, artifacts: "scm-server.log"
         }
       }
