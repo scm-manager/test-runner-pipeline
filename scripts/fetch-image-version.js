@@ -2,7 +2,7 @@ const fetch = require("isomorphic-fetch");
 
 return fetch('https://oss.cloudogu.com/jenkins/job/scm-manager-github/job/scm-manager/job/develop/api/json')
   .then(response => response.json())
-  .then(json => json.lastSuccessfulBuild.number)
+  .then(json => json.lastStableBuild.number)
   .then(number => fetch(`https://oss.cloudogu.com/jenkins/job/scm-manager-github/job/scm-manager/job/develop/${number}/api/json`))
   .then(response => response.json())
   .then(json => {
