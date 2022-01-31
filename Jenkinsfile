@@ -31,7 +31,7 @@ pipeline {
       steps {
         sh "yarn install"
         script {
-          def tagVersion = sh(script: "node scripts/fetch-image-version.js", returnStdout: true)
+          def tagVersion = sh(script: "node scripts/fetch-image-version.js", returnStdout: true).trim()
           imageTag = "cloudogu/scm-manager:" + tagVersion
         }
       }
