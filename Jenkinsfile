@@ -56,7 +56,7 @@ pipeline {
           docker.image(imageTag).withRun("--name scm-server -v ${env.WORKSPACE}/scm-home/init.script.d:/var/lib/scm/init.script.d -e JAVA_OPTS='-Dscm.initialPassword=scmadmin' -e TRP_PLUGINS=${params.Plugins}") {
             def ip = sh(script: "docker inspect -f \"{{.NetworkSettings.IPAddress}}\" scm-server", returnStdout: true).trim()
             docker.image('scmmanager/node-build:14.16.0').inside {
-              withCredentials([usernamePassword(credentialsId: 'cesmarvin-github', passwordVariable: 'GITHUB_API_TOKEN', usernameVariable: 'GITHUB_ACCOUNT')]) {
+              withCredentials([usernamePassword(credentialsId: 'cesmarvin', passwordVariable: 'GITHUB_API_TOKEN', usernameVariable: 'GITHUB_ACCOUNT')]) {
                 sh "LOG_LEVEL=${params.Log_Level} yarn integration-test-runner collect -c -s"
                 sh "curl -X POST -u scmadmin:scmadmin \"http://${ip}:8080/scm/api/v2/plugins/available/scm-script-plugin/install?restart=true\""
                 sh "LOG_LEVEL=${params.Log_Level} yarn integration-test-runner provision -a \"http://${ip}:8080/scm\" -u scmadmin -p scmadmin"
