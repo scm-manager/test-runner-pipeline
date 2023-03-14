@@ -4,6 +4,8 @@ const HEADERS = {
   "Authorization": 'Basic ' + Buffer.from(process.env.ECOSYSTEM_USERNAME + ":" + process.env.ECOSYSTEM_API_TOKEN).toString('base64')
 }
 
+console.log(process.env);
+
 return fetch('https://ecosystem.cloudogu.com/jenkins/job/scm-manager/job/scm-manager/job/develop/api/json', { headers: HEADERS })
   .then(response => response.json())
   .then(json => json.lastStableBuild.number)
