@@ -1,15 +1,21 @@
 const fetch = require("isomorphic-fetch");
 
+const CREDENTIALS = `${process.env.ECOSYSTEM_USERNAME}:${process.env.ECOSYSTEM_API_TOKEN}`;
+
 const HEADERS = {
-  "Authorization": 'Basic ' + Buffer.from(process.env.ECOSYSTEM_USERNAME + ":" + process.env.ECOSYSTEM_API_TOKEN).toString('base64')
+  "Authorization": `Basic ${btoa(CREDENTIALS)}`
 }
 
-console.log(process.env);
+const OPTIONS = {
+  method: 'GET',
+  headers: HEADERS,
+  credentials: 'include'
+};
 
-return fetch('https://ecosystem.cloudogu.com/jenkins/job/scm-manager/job/scm-manager/job/develop/api/json', { headers: HEADERS })
+return fetch('https://ecosystem.cloudogu.com/jenkins/job/scm-manager/job/scm-manager/job/develop/api/json', OPTIONS)
   .then(response => response.json())
   .then(json => json.lastStableBuild.number)
-  .then(number => fetch(`https://ecosystem.cloudogu.com/jenkins/job/scm-manager/job/scm-manager/job/develop/${number}/api/json`, { headers: HEADERS }))
+  .then(number => fetch(`https://ecosystem.cloudogu.com/jenkins/job/scm-manager/job/scm-manager/job/develop/${number}/api/json`, OPTIONS))
   .then(response => response.json())
   .then(json => {
     for (const action of json.actions) {

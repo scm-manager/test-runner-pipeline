@@ -31,7 +31,7 @@ pipeline {
       steps {
         sh "yarn install"
         script {
-          withCredentials([usernamePassword(credentialsId: 'SCM-Manager', passwordVariable: 'ECOSYSTEM_API_TOKEN', usernameVariable: 'ECOSYSTEM_USERNAME')]) {
+          withCredentials([usernamePassword(credentialsId: 'cesar', passwordVariable: 'ECOSYSTEM_API_TOKEN', usernameVariable: 'ECOSYSTEM_USERNAME')]) {
             def tagVersion = sh(script: "node scripts/fetch-image-version.js", returnStdout: true).trim()
             imageTag = "cloudogu/scm-manager:" + tagVersion
           }
