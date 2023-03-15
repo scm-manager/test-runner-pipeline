@@ -3,7 +3,7 @@ const fetch = require("isomorphic-fetch");
 const CREDENTIALS = `${process.env.ECOSYSTEM_USERNAME}:${process.env.ECOSYSTEM_API_TOKEN}`;
 
 const HEADERS = {
-  "Authorization": `Basic ${btoa(CREDENTIALS)}`
+  "Authorization": `Basic ${Buffer.from(CREDENTIALS).toString('base64')}`
 }
 
 const OPTIONS = {
