@@ -18,31 +18,6 @@ pipeline {
   }
 
   stages {
-    stage('Get version') {
-      agent {
-        docker {
-          image 'scmmanager/node-build:14.16.0'
-          label 'docker'
-        }
-      }
-      environment {
-        HOME = "${env.WORKSPACE}"
-      }
-      steps {
-        sh "yarn install"
-        script {
-          withCredentials([usernamePassword(credentialsId: 'cesar', passwordVariable: 'ECOSYSTEM_API_TOKEN', usernameVariable: 'ECOSYSTEM_USERNAME')]) {
-            def tagVersion = sh(script: "node scripts/fetch-image-version.js", returnStdout: true).trim()
-            imageTag = "cloudogu/scm-manager:" + tagVersion
-          }
-        }
-      }
-    }
-    stage('Trigger ci-plugin-snapshot build') {
-      steps {
-        build job: '../ci-plugin-snapshot/master'
-      }
-    }
     stage('Run test-runner') {
       agent {
         node {
@@ -53,6 +28,16 @@ pipeline {
         HOME = "${env.WORKSPACE}"
       }
       steps {
+        script {
+          docker.image('scmmanager/node-build:14.16.0').inside {
+            sh "yarn install"
+            withCredentials([usernamePassword(credentialsId: 'cesar', passwordVariable: 'ECOSYSTEM_API_TOKEN', usernameVariable: 'ECOSYSTEM_USERNAME')]) {
+              def tagVersion = sh(script: "node scripts/fetch-image-version.js", returnStdout: true).trim()
+              imageTag = "cloudogu/scm-manager:" + tagVersion
+            }
+          }
+        }
+        build job: '../ci-plugin-snapshot/master'
         script {
           println("Start scm-server using image ${imageTag}")
           docker.image(imageTag).withRun("--name scm-server -v ${env.WORKSPACE}/scm-home/init.script.d:/var/lib/scm/init.script.d -e JAVA_OPTS='-Dscm.initialPassword=scmadmin' -e TRP_PLUGINS=${params.Plugins}") {
