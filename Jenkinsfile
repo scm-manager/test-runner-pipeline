@@ -18,10 +18,37 @@ pipeline {
   }
 
   stages {
+    stage('Get version') {
+      agent {
+        node {
+          label "scmm"
+        }
+      }
+      environment {
+        HOME = "${env.WORKSPACE}"
+      }
+      steps {
+        resolveTag()
+        script { currentBuild.description = "${imageTag}" }
+      }
+    }
+    stage('Download plugins') {
+      agent {
+        node {
+          label "scmm"
+        }
+      }
+      environment {
+        HOME = "${env.WORKSPACE}"
+      }
+      steps {
+        preparePlugins()
+      }
+    }
     stage('Run test-runner') {
       agent {
         node {
-          label "docker"
+          label "scmm"
         }
       }
       environment {
@@ -29,24 +56,17 @@ pipeline {
       }
       steps {
         script {
-          docker.image('scmmanager/node-build:14.16.0').inside {
-            sh "yarn install"
-            withCredentials([usernamePassword(credentialsId: 'cesar', passwordVariable: 'ECOSYSTEM_API_TOKEN', usernameVariable: 'ECOSYSTEM_USERNAME')]) {
-              def tagVersion = sh(script: "node scripts/fetch-image-version.js", returnStdout: true).trim()
-              imageTag = "cloudogu/scm-manager:" + tagVersion
-            }
-          }
-        }
-        build job: '../ci-plugin-snapshot/master'
-        script {
           println("Start scm-server using image ${imageTag}")
-          docker.image(imageTag).withRun("--name scm-server -v ${env.WORKSPACE}/scm-home/init.script.d:/var/lib/scm/init.script.d -e JAVA_OPTS='-Dscm.initialPassword=scmadmin' -e TRP_PLUGINS=${params.Plugins}") {
+          docker.image(imageTag).withRun("--name scm-server -v ${env.WORKSPACE}/plugin_downloads:/tmp/plugin_downloads -e JAVA_OPTS='-Dscm.initialPassword=scmadmin -Dscm.stage=TESTING'") {
+            // We need to wait here because the plugins directory on the scm-server is not ready yet
+            sh("sleep 120")
+            sh("docker exec -i scm-server bash -c 'cp /tmp/plugin_downloads/*.smp /var/lib/scm/plugins'")
             def ip = sh(script: "docker inspect -f \"{{.NetworkSettings.IPAddress}}\" scm-server", returnStdout: true).trim()
             docker.image('scmmanager/node-build:14.16.0').inside {
               withCredentials([usernamePassword(credentialsId: 'cesmarvin', passwordVariable: 'GITHUB_API_TOKEN', usernameVariable: 'GITHUB_ACCOUNT')]) {
+                sh "yarn install"
                 sh "yarn bin integration-test-runner"
                 sh "LOG_LEVEL=${params.Log_Level} yarn integration-test-runner collect -c -s"
-                sh "curl -X POST -u scmadmin:scmadmin \"http://${ip}:8080/scm/api/v2/plugins/available/scm-script-plugin/install?restart=true\""
                 sh "LOG_LEVEL=${params.Log_Level} yarn integration-test-runner provision -a \"http://${ip}:8080/scm\" -u scmadmin -p scmadmin"
                 sh "NO_COLOR=1 LOG_LEVEL=${params.Log_Level} yarn integration-test-runner run -a \"http://${ip}:8080/scm\" -u scmadmin -p scmadmin"
               }
@@ -74,4 +94,52 @@ pipeline {
     }
   }
 }
+
+void preparePlugins() {
+  println("Download plugins")
+  println(params.Plugins)
+  String[] plugins = !params.Plugins.equals("") ? params.Plugins.split(",") : getDefaultPlugins()
+  sh "rm -rf ~/plugin_downloads && mkdir ~/plugin_downloads"
+  plugins.each { p ->
+    sh("wget -O ${env.WORKSPACE}/plugin_downloads/${p}.smp https://packages.scm-manager.org/repository/latest_plugin_snapshots/${p}.smp")
+  }
+}
+
+void resolveTag() {
+  if (env.BRANCH_NAME.startsWith("release/")) {
+    imageTag = "scmmanager/scm-manager:" + env.BRANCH_NAME.split("/", 2)[1]
+  } else {
+    sh("sudo apt-get install -y jq")
+    def tagVersion = sh(script: "curl -L -N --fail 'https://hub.docker.com/v2/repositories/cloudogu/scm-manager/tags/?page_size=1000' | jq '.results | .[] | .name' -r | sed 's/latest//' | sort --version-sort | tail -n 1", returnStdout: true).trim()
+    imageTag = "cloudogu/scm-manager:" + tagVersion
+  }
+}
+
+String[] getDefaultPlugins() {
+  return [
+     "scm-gravatar-plugin",
+     "scm-mail-plugin",
+     "scm-review-plugin",
+     "scm-tagprotection-plugin",
+     "scm-jira-plugin",
+     "scm-activity-plugin",
+     "scm-statistic-plugin",
+     "scm-pathwp-plugin",
+     "scm-branchwp-plugin",
+     "scm-notify-plugin",
+     "scm-authormapping-plugin",
+     "scm-groupmanager-plugin",
+     "scm-pushlog-plugin",
+     "scm-support-plugin",
+     "scm-directfilelink-plugin",
+     "scm-readme-plugin",
+     "scm-editor-plugin",
+     "scm-landingpage-plugin",
+     "scm-repository-template-plugin",
+     "scm-commit-message-checker-plugin",
+     "scm-trace-monitor-plugin",
+     "scm-markdown-plantuml-plugin"
+  ]
+}
+
 String imageTag;
