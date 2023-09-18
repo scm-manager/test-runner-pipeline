@@ -110,7 +110,7 @@ void resolveTag() {
     imageTag = "scmmanager/scm-manager:" + env.BRANCH_NAME.split("/", 2)[1]
   } else {
     sh("sudo apt-get install -y jq")
-    def tagVersion = sh(script: "curl -L -N --fail 'https://hub.docker.com/v2/repositories/cloudogu/scm-manager/tags/?page_size=1000' | jq '.results | .[] | .name' -r | sed 's/latest//' | sort --version-sort | tail -n 1", returnStdout: true).trim()
+    def tagVersion = sh(script: "curl -L -N --fail 'https://hub.docker.com/v2/repositories/cloudogu/scm-manager/tags/?page_size=1' | jq '.results | .[] | .name' -r | sed 's/latest//'", returnStdout: true).trim()
     imageTag = "cloudogu/scm-manager:" + tagVersion
   }
 }
