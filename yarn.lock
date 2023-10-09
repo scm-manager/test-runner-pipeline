@@ -194,10 +194,10 @@
   dependencies:
     "@octokit/openapi-types" "^5.3.2"
 
-"@scm-manager/integration-test-runner@^3.3.0":
-  version "3.4.3"
-  resolved "https://registry.yarnpkg.com/@scm-manager/integration-test-runner/-/integration-test-runner-3.4.3.tgz#6a2e44f5c360fb1c40c3701cf9e8ddadd5031666"
-  integrity sha512-tA3B5iDAsNWQgXUiMhnrz7sX5dc0674R5Xb+Fch5kSysxMjwn5gMeDUIXA6j5S6OXsp8jlIj/y70m5foplO2WQ==
+"@scm-manager/integration-test-runner@^3.4.4":
+  version "3.4.4"
+  resolved "https://registry.yarnpkg.com/@scm-manager/integration-test-runner/-/integration-test-runner-3.4.4.tgz#616b5f94182547f77401d4f70cf26bdddfa8eccc"
+  integrity sha512-1HIk/TggSOq47tVCzVCk+82yrRbh4uyr4D2rtBZznmZWQpW8QUSgZWcJdeA0j2uxq406JxtZv+5mBYojdP+FpQ==
   dependencies:
     "@ffmpeg-installer/ffmpeg" "^1.0.20"
     "@octokit/rest" "^18.0.9"

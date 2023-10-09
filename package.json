@@ -7,7 +7,7 @@
   "license": "MIT",
   "repository": "https://github.com/scm-manager/test-runner-pipeline",
   "dependencies": {
-    "@scm-manager/integration-test-runner": "^3.3.0"
+    "@scm-manager/integration-test-runner": "^3.4.4"
   },
   "prettier": "@scm-manager/prettier-config"
 }
