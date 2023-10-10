@@ -59,10 +59,10 @@ pipeline {
           println("Start scm-server using image ${imageTag}")
           docker.image(imageTag).withRun("--name scm-server -v ${env.WORKSPACE}/plugin_downloads:/tmp/plugin_downloads -e JAVA_OPTS='-Dscm.initialPassword=scmadmin -Dscm.stage=TESTING'") {
             // We need to wait here because the plugins directory on the scm-server is not ready yet
-            sh("sleep 90")
+            sh("sleep 30")
             sh("docker exec -i scm-server bash -c 'cp /tmp/plugin_downloads/*.smp /var/lib/scm/plugins'")
             sh("docker restart scm-server")
-            sh("sleep 150")
+            sh("sleep 30")
             def ip = sh(script: "docker inspect -f \"{{.NetworkSettings.IPAddress}}\" scm-server", returnStdout: true).trim()
             docker.image('scmmanager/node-build:14.16.0').inside {
               withCredentials([usernamePassword(credentialsId: 'cesmarvin', passwordVariable: 'GITHUB_API_TOKEN', usernameVariable: 'GITHUB_ACCOUNT')]) {
