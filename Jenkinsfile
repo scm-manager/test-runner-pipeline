@@ -66,6 +66,7 @@ pipeline {
             def ip = sh(script: "docker inspect -f \"{{.NetworkSettings.IPAddress}}\" scm-server", returnStdout: true).trim()
             docker.image('scmmanager/node-build:14.16.0').inside {
               withCredentials([usernamePassword(credentialsId: 'cesmarvin', passwordVariable: 'GITHUB_API_TOKEN', usernameVariable: 'GITHUB_ACCOUNT')]) {
+                sh "git config --global user.email testrunner@testing.com && git config --global user.name 'Test Runner'"
                 sh "yarn install"
                 sh "yarn bin integration-test-runner"
                 sh "LOG_LEVEL=${params.Log_Level} yarn integration-test-runner collect -c -s"
