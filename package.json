@@ -1,11 +1,11 @@
 {
   "name": "@scm-manager/test-runner-pipeline",
   "version": "1.0.0-SNAPSHOT",
-  "private": true,
-  "author": "Eduard Heimbuch <eduard.heimbuch@cloudogu.com>",
   "description": "Pipeline to automatically run the Integration-Test-Runner with the newest SCM-Manager development versions",
-  "license": "MIT",
   "repository": "https://github.com/scm-manager/test-runner-pipeline",
+  "author": "SCM Team <scm-team@cloudogu.com>",
+  "license": "AGPL-3.0-only",
+  "private": true,
   "dependencies": {
     "@scm-manager/integration-test-runner": "^3.4.4"
   },
