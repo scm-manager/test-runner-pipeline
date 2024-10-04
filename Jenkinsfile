@@ -73,6 +73,7 @@ pipeline {
                   sh "LOG_LEVEL=${params.Log_Level} yarn integration-test-runner collect -c -s"
                   sh "LOG_LEVEL=${params.Log_Level} yarn integration-test-runner provision -a \"http://${ip}:8080/scm\" -u scmadmin -p scmadmin"
                   sh "NO_COLOR=1 LOG_LEVEL=${params.Log_Level} yarn integration-test-runner run -a \"http://${ip}:8080/scm\" -u scmadmin -p scmadmin"
+                  sh "git -c credential.helper=\"!f() { echo username='\$GITHUB_ACCOUNT'; echo password='\$GITHUB_API_TOKEN'; }; f\" push https://github.com/scm-manager/test-runner-pipeline HEAD:master"
                 }
               }
             } finally {
