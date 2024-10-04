@@ -138,7 +138,7 @@ String[] getDefaultPlugins() {
     "scm-ssh-plugin",
     "scm-metrics-json-plugin",
     "scm-tagprotection-plugin",
-//     "scm-repository-template-plugin", TODO add this again when fixed for 3.x
+    "scm-repository-template-plugin",
     "scm-gotenberg-plugin",
     "scm-review-plugin",
     "scm-code-editor-plugin",
