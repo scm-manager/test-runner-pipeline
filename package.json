@@ -7,7 +7,7 @@
   "license": "AGPL-3.0-only",
   "private": true,
   "dependencies": {
-    "@scm-manager/integration-test-runner": "^3.4.4"
+    "@scm-manager/integration-test-runner": "^3.5.0"
   },
   "prettier": "@scm-manager/prettier-config"
 }
