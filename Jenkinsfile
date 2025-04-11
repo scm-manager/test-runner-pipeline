@@ -43,6 +43,7 @@ pipeline {
       }
       steps {
         preparePlugins()
+        stash name: 'plugins', includes: 'plugin_downloads/**'
       }
     }
     stage('Run test-runner') {
@@ -56,6 +57,8 @@ pipeline {
       }
       steps {
         script {
+          sh 'rm -rf $WORKSPACE/plugin_downloads'
+          unstash 'plugins'
           println("Start scm-server using image ${imageTag}")
           sh("(docker stop scm-server && docker rm scm-server) || true")
           docker.image(imageTag).withRun("--name scm-server -v ${env.WORKSPACE}/plugin_downloads:/tmp/plugin_downloads -e SCM_WEBAPP_STAGE=TESTING -e SCM_WEBAPP_INITIALUSER=scmadmin -e SCM_WEBAPP_INITIALPASSWORD=scmadmin -e JAVA_OPTS='-Dscm.stage=TESTING'") {
